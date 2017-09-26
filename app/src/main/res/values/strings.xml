@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">AutoSlideshowApp</string>
+
+
+    <!--ボタンテキスト-->
+    <string name="button_play">再生する</string>
+    <string name="button_stop">停止する</string>
+</resources>
