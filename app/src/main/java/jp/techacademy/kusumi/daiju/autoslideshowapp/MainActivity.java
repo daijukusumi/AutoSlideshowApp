@@ -80,6 +80,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             // パーミッションの許可状態を確認する
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 // 許可されている
+                buttonBack.setEnabled(true);
+                buttonNext.setEnabled(true);
+                buttonPlayStop.setEnabled(true);
                 getContentsInfo();
                 setImages();
             } else {
@@ -88,6 +91,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             // Android 5系以下の場合
         } else {
+            buttonBack.setEnabled(true);
+            buttonNext.setEnabled(true);
+            buttonPlayStop.setEnabled(true);
             getContentsInfo();
             setImages();
         }
@@ -97,10 +103,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
             case PERMISSIONS_REQUEST_CODE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    buttonBack.setEnabled(true);
-                    buttonNext.setEnabled(true);
-                    buttonPlayStop.setEnabled(true);
-
                     getContentsInfo();
                 } else {
                 }
