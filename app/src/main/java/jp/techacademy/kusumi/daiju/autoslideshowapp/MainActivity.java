@@ -68,6 +68,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonBack.setOnClickListener(this);
         buttonPlayStop.setOnClickListener(this);
 
+        buttonBack.setEnabled(false);
+        buttonNext.setEnabled(false);
+        buttonPlayStop.setEnabled(false);
+
         buttonPlayStop.setText(getString(R.string.button_play));
         playStatus = getString(R.string.button_play);
 
@@ -93,11 +97,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
             case PERMISSIONS_REQUEST_CODE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    buttonBack.setEnabled(true);
+                    buttonNext.setEnabled(true);
+                    buttonPlayStop.setEnabled(true);
+
                     getContentsInfo();
+                } else {
                 }
                 break;
-            default:
-                break;
+
         }
     }
 
