@@ -85,7 +85,6 @@
         app:layout_constraintLeft_toLeftOf="@+id/buttonBack"
         app:layout_constraintRight_toRightOf="@+id/buttonNext"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher"
         tools:layout_constraintLeft_creator="1"
         tools:layout_constraintRight_creator="1" />
 
