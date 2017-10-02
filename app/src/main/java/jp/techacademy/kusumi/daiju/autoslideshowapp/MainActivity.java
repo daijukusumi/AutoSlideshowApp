@@ -5,6 +5,9 @@ import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -39,10 +43,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     String playStatus;
     Timer timer;
 
-
     //ArrayListを用意し、idとuriを連携
     //TODO String を　URIに修正
     ArrayList<Uri> uriList = new ArrayList<>();
+
+    Bitmap resizedImage;
 
 
 
@@ -132,8 +137,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 int fieldIndex = cursor.getColumnIndex(MediaStore.Images.Media._ID);
                 Long id = cursor.getLong(fieldIndex);
                 Uri imageUri = ContentUris.withAppendedId(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id);
-
                 uriList.add(imageUri);
+
 
             } while (cursor.moveToNext());
         }
@@ -175,29 +180,62 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         //選択した写真をメインのimageViewにセットする
-        imageViewMain.setImageURI(uriList.get(pic_id_Zero));
+        formatToBitmap(uriList.get(pic_id_Zero));
+        imageViewMain.setImageBitmap(resizedImage);
         imageViewMain.setScaleType(ImageView.ScaleType.FIT_XY);
 
         //写真が5枚以上ある場合、画面上部のimageViewに写真をセットする
         if (pic_size >= 5) {
-            imageViewSmallZero.setImageURI(uriList.get(pic_id_Zero));
+
+            imageViewSmallZero.setImageBitmap(resizedImage);
             imageViewSmallZero.setScaleType(ImageView.ScaleType.FIT_XY);
 
-            imageViewSmallPlus_1.setImageURI(uriList.get(pic_id_Plus_1));
+            resizedImage = null;
+            formatToBitmap(uriList.get(pic_id_Plus_1));
+            imageViewSmallPlus_1.setImageBitmap(resizedImage);
             imageViewSmallPlus_1.setScaleType(ImageView.ScaleType.FIT_XY);
 
-            imageViewSmallPlus_2.setImageURI(uriList.get(pic_id_Plus_2));
+            resizedImage = null;
+            formatToBitmap(uriList.get(pic_id_Plus_2));
+            imageViewSmallPlus_2.setImageBitmap(resizedImage);
             imageViewSmallPlus_2.setScaleType(ImageView.ScaleType.FIT_XY);
 
-            imageViewSmallMinus_2.setImageURI(uriList.get(pic_id_Minus_2));
+            resizedImage = null;
+            formatToBitmap(uriList.get(pic_id_Minus_2));
+            imageViewSmallMinus_2.setImageBitmap(resizedImage);
             imageViewSmallMinus_2.setScaleType(ImageView.ScaleType.FIT_XY);
 
-            imageViewSmallMinus_1.setImageURI(uriList.get(pic_id_Minus_1));
+            resizedImage = null;
+            formatToBitmap(uriList.get(pic_id_Minus_1));
+            imageViewSmallMinus_1.setImageBitmap(resizedImage);
             imageViewSmallMinus_1.setScaleType(ImageView.ScaleType.FIT_XY);
         }
 
         //写真の枚数と表示中の写真の番号を表示する
         textViewPictureNum.setText(String.valueOf(pic_selected + 1) + "/" + String.valueOf(pic_size));
+    }
+
+    private void formatToBitmap(Uri uri) {
+        // URIからBitmapを取得する
+        Bitmap image;
+        try {
+            ContentResolver contentResolver = getContentResolver();
+            InputStream inputStream = contentResolver.openInputStream(uri);
+            image = BitmapFactory.decodeStream(inputStream);
+            inputStream.close();
+        } catch (Exception e) {
+            return;
+        }
+
+        // 取得したBimapの長辺を500ピクセルにリサイズする
+        int imageWidth = image.getWidth();
+        int imageHeight = image.getHeight();
+        float scale = Math.min((float) 500 / imageWidth, (float) 500 / imageHeight); // (1)
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scale, scale);
+
+        resizedImage =  Bitmap.createBitmap(image, 0, 0, imageWidth, imageHeight, matrix, true);
     }
 
     @Override
